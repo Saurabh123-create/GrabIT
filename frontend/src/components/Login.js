@@ -5,18 +5,27 @@ import { Link } from "react-router-dom";
 export default function Login() {
   const [loginData, setLoginData] = useState({
     name: "",
-    password: '',
+    password: "",
     email: "",
   });
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
+    let loginAPi = await fetch("http://localhost:4000/login", {
+      method: "Post",
+      body: JSON.stringify(loginData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    loginAPi = await loginAPi.json();
+    console.log(loginAPi);
   }
 
-  function handleData(str,dataType){
-    setLoginData(prev=>{
-        return {...prev, [dataType]:str}
-    })
+  function handleData(str, dataType) {
+    setLoginData((prev) => {
+      return { ...prev, [dataType]: str };
+    });
   }
 
   return (
@@ -36,9 +45,10 @@ export default function Login() {
                   placeholder="Please enter name"
                   value={loginData.name}
                   className={LoginCss.input}
-                  onChange={(e)=>{
+                  onChange={(e) => {
                     let str = e.target.value.trimStart();
-                    handleData(str, 'name')}}
+                    handleData(str, "name");
+                  }}
                 />
               </Box>
               <Box className={LoginCss.labels}>
@@ -51,9 +61,10 @@ export default function Login() {
                   placeholder="Please enter email"
                   value={loginData.email}
                   className={LoginCss.input}
-                  onChange={(e)=>{
+                  onChange={(e) => {
                     let str = e.target.value.trimStart();
-                    handleData(str, 'email')}}
+                    handleData(str, "email");
+                  }}
                 />
               </Box>
               <Box className={LoginCss.labels}>
@@ -66,13 +77,14 @@ export default function Login() {
                   placeholder="Please enter password"
                   value={loginData.password}
                   className={LoginCss.input}
-                  onChange={(e)=>{
+                  onChange={(e) => {
                     let str = e.target.value.trimStart();
-                    handleData(str, 'password')}}
+                    handleData(str, "password");
+                  }}
                 />
               </Box>
               <Box color="blue">
-              <Link>Sign-up</Link>
+                <Link>Sign-up</Link>
               </Box>
               <Button type="submit" variant="contained" size="large">
                 Login
