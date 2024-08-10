@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Box, Button } from "@mui/material";
-import LoginCss from "./Login.module.css";
-import { Link } from "react-router-dom";
-export default function Login() {
-  const [loginData, setLoginData] = useState({
+import LoginCss from "./SignUp.module.css";
+import {Link} from 'react-router-dom';
+export default function SignUP() {
+  const [signupData, setsignupData] = useState({
     name: "",
     password: '',
     email: "",
+    confirmpassword: "",
   });
 
   function handleSubmit(event) {
@@ -14,7 +15,7 @@ export default function Login() {
   }
 
   function handleData(str,dataType){
-    setLoginData(prev=>{
+    setsignupData(prev=>{
         return {...prev, [dataType]:str}
     })
   }
@@ -34,7 +35,7 @@ export default function Login() {
                   id="name"
                   type="text"
                   placeholder="Please enter name"
-                  value={loginData.name}
+                  value={signupData.name}
                   className={LoginCss.input}
                   onChange={(e)=>{
                     let str = e.target.value.trimStart();
@@ -49,7 +50,7 @@ export default function Login() {
                   id="email"
                   type="text"
                   placeholder="Please enter email"
-                  value={loginData.email}
+                  value={signupData.email}
                   className={LoginCss.input}
                   onChange={(e)=>{
                     let str = e.target.value.trimStart();
@@ -64,18 +65,33 @@ export default function Login() {
                   id="pass"
                   type="text"
                   placeholder="Please enter password"
-                  value={loginData.password}
+                  value={signupData.password}
                   className={LoginCss.input}
                   onChange={(e)=>{
                     let str = e.target.value.trimStart();
                     handleData(str, 'password')}}
                 />
               </Box>
+              <Box className={LoginCss.labels}>
+                <div>
+                  <label htmlFor="confirmpass">Confirm Password</label>
+                </div>
+                <input
+                  id="confirmpass"
+                  type="text"
+                  placeholder="Please enter confirm password"
+                  value={signupData.confirmpassword}
+                  className={LoginCss.input}
+                  onChange={(e)=>{
+                    let str = e.target.value.trimStart();
+                    handleData(str, 'confirmpassword')}}
+                />
+              </Box>
               <Box color="blue">
-              <Link>Sign-up</Link>
+                <Link>Log-in</Link>
               </Box>
               <Button type="submit" variant="contained" size="large">
-                Login
+                SignUp
               </Button>
             </Box>
           </Box>

@@ -26,7 +26,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  box-shadow: 3px 5px 10px #084572 inset;
+  border: 2px solid black;
 }
 
 .input {
