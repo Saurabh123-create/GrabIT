@@ -1,0 +1,19 @@
+.header {
+  background: #ff8343;
+  height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 10px;
+}
+
+.logout{
+    font-size:24px;
+    font-weight:700; 
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-decoration: none;
+    color: initial;
+    cursor: pointer;
+}
