@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button } from "@mui/material";
+import { Alert, Box, Button, Snackbar } from "@mui/material";
 import LoginCss from "./SignUp.module.css";
 import { Link, useNavigate } from "react-router-dom";
 export default function SignUP() {
@@ -11,6 +11,30 @@ export default function SignUP() {
     confirmpassword: "",
   });
 
+  const [error, seterror] = useState({
+    name: "",
+    password: "",
+    email: "",
+    confirmpassword: "",
+  });
+
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    type: "success",
+  });
+
+  function toggleSnackBar(open, message, type = "success") {
+    setSnackbar((prev) => {
+      return { ...prev, open, message, type };
+    });
+  }
+  function handleClose() {
+    setSnackbar((prev) => {
+      return { ...prev, open: false, message: "" };
+    });
+  }
+
   useEffect(() => {
     const auth = JSON.parse(localStorage.getItem("auth"));
     if (auth != null) {
@@ -18,8 +42,50 @@ export default function SignUP() {
     }
   }, []);
 
-  function handleSubmit(event) {
+  function handleError() {
+    let execute = true;
+    for (let item in signupData) {
+      if (signupData[item] == "") {
+        execute = false;
+        seterror((prev) => {
+          return { ...prev, [item]: `Please enter ${item}` };
+        });
+      } else {
+        seterror((prev) => {
+          return { ...prev, [item]: `` };
+        });
+      }
+    }
+    return execute;
+  }
+
+  async function handleSubmit(event) {
     event.preventDefault();
+    let exe = handleError();
+    if (!exe) {
+      return;
+    }
+    if (signupData.confirmpassword != signupData.password) {
+      toggleSnackBar(true, "Password Missmatch", "error");
+      return;
+    }
+
+    let result = await fetch("http://localhost:4000/signup", {
+      method: "POST",
+      body: JSON.stringify(signupData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    result = await result.json();
+    if (result.status == "success") {
+      localStorage.setItem("auth", JSON.stringify(result.auth));
+      localStorage.setItem("auth", JSON.stringify(result.data));
+      toggleSnackBar(true, "SignUp successfull");
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    }
   }
 
   function handleData(str, dataType) {
@@ -57,7 +123,7 @@ export default function SignUP() {
                 </div>
                 <input
                   id="email"
-                  type="text"
+                  type="email"
                   placeholder="Please enter email"
                   value={signupData.email}
                   className={LoginCss.input}
@@ -73,7 +139,7 @@ export default function SignUP() {
                 </div>
                 <input
                   id="pass"
-                  type="text"
+                  type="password"
                   placeholder="Please enter password"
                   value={signupData.password}
                   className={LoginCss.input}
@@ -89,7 +155,7 @@ export default function SignUP() {
                 </div>
                 <input
                   id="confirmpass"
-                  type="text"
+                  type="password"
                   placeholder="Please enter confirm password"
                   value={signupData.confirmpassword}
                   className={LoginCss.input}
@@ -105,10 +171,35 @@ export default function SignUP() {
               <Button type="submit" variant="contained" size="large">
                 SignUp
               </Button>
+              <Box sx={{ color: "red" }}>
+                <ul>
+                  {error.name && <li>{error.name}</li>}
+                  {error.email && <li>{error.email}</li>}
+                  {error.password && <li>{error.password}</li>}
+                  {error.confirmpassword && <li>{error.confirmpassword}</li>}
+                </ul>
+              </Box>
             </Box>
           </Box>
         </Box>
       </form>
+      {snackbar.open && (
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={3000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        >
+          <Alert
+            onClose={handleClose}
+            severity={snackbar.type}
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
+      )}
     </>
   );
 }

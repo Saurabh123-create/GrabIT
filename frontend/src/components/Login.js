@@ -1,54 +1,81 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Box, Button, Snackbar } from "@mui/material";
+import { Alert, Box, Button, Snackbar } from "@mui/material";
 import LoginCss from "./Login.module.css";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
   const navigate = useNavigate();
-  useEffect(() => {
-    const auth = JSON.parse(localStorage.getItem("auth"));
-    if (auth != null) {
-      navigate("/");
-    }
-  }, []);
   const [loginData, setLoginData] = useState({
     name: "",
     password: "",
     email: "",
   });
+  const [error, seterror] = useState({
+    name: "",
+    password: "",
+    email: "",
+  });
+  
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
+    type : "success",
   });
 
-  function toggleSnackBar(open, message) {
+  function toggleSnackBar(open, message , type='success') {
     setSnackbar((prev) => {
-      return { ...prev, open: true, message: message };
+      return { ...prev,open, message, type};
     });
   }
+
   function handleClose() {
     setSnackbar((prev) => {
       return { ...prev, open: false, message: "" };
     });
   }
 
+  function handleError() {
+    let execute = true;
+    for (let item in loginData) {
+      if (loginData[item] == "") {
+        execute = false;
+        seterror((prev) => {
+          return { ...prev, [item]: `Please enter ${item}` };
+        });
+      } else {
+        seterror((prev) => {
+          return { ...prev, [item]: `` };
+        });
+      }
+    }
+    return execute;
+  }
+
   async function handleSubmit(event) {
     event.preventDefault();
-    let loginAPi = await fetch("http://localhost:4000/login", {
-      method: "Post",
-      body: JSON.stringify(loginData),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    loginAPi = await loginAPi.json();
-    if (loginAPi.status == "success") {
-      localStorage.setItem("auth", JSON.stringify(loginAPi.auth));
-      localStorage.setItem("user", JSON.stringify(loginAPi.data));
-      toggleSnackBar(true, "Login Successfull");
-      navigate("/");
-    } else {
-      toggleSnackBar(true, loginAPi.message);
+    let exe = handleError();
+    if (!exe) {
+      return;
+    }
+    try{
+        let loginAPi = await fetch("http://localhost:4000/login", {
+          method: "Post",
+          body: JSON.stringify(loginData),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        loginAPi = await loginAPi.json();
+        if (loginAPi.status == "success") {
+          localStorage.setItem("auth", JSON.stringify(loginAPi.auth));
+          localStorage.setItem("user", JSON.stringify(loginAPi.data));
+          toggleSnackBar(true, "Login Successfull");
+          navigate("/");
+        } else {
+          toggleSnackBar(true, loginAPi.message , 'error');
+        }
+    }catch(err){
+        toggleSnackBar(true, err.message , 'error');
     }
   }
 
@@ -65,6 +92,9 @@ export default function Login() {
           <Box className={LoginCss.loginImg}></Box>
           <Box className={LoginCss.loginBox}>
             <Box>
+              <Box textAlign={"center"} fontSize={"30px"} fontWeight={600}>
+                Login Page
+              </Box>
               <Box className={LoginCss.labels}>
                 <div>
                   <label htmlFor="name">Name</label>
@@ -87,7 +117,7 @@ export default function Login() {
                 </div>
                 <input
                   id="email"
-                  type="text"
+                  type="email"
                   placeholder="Please enter email"
                   value={loginData.email}
                   className={LoginCss.input}
@@ -103,7 +133,7 @@ export default function Login() {
                 </div>
                 <input
                   id="pass"
-                  type="text"
+                  type="password"
                   placeholder="Please enter password"
                   value={loginData.password}
                   className={LoginCss.input}
@@ -119,18 +149,33 @@ export default function Login() {
               <Button type="submit" variant="contained" size="large">
                 Login
               </Button>
+              <Box sx={{ color: "red" }}>
+                <ul>
+                  {error.name && <li>{error.name}</li>}
+                  {error.email && <li>{error.email}</li>}
+                  {error.password && <li>{error.password}</li>}
+                </ul>
+              </Box>
             </Box>
           </Box>
         </Box>
       </form>
       {snackbar.open && (
         <Snackbar
-          open={snackbar.open}
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
           onClose={handleClose}
-          message={snackbar.message}
-          autoHideDuration={3000}
-        />
+          severity={snackbar.type}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
       )}
     </>
   );

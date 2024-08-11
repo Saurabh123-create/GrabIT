@@ -47,4 +47,51 @@ app.post("/login", async (req, res) => {
     );
   }
 });
+
+app.post("/signup", async (req, res) => {
+  try {
+    if (Object.keys(req.body).length == 0) {
+      throw "Empty Payload Provided";
+    }
+    let result = new users(req.body);
+    await result.save();
+    result = result.toObject();
+    delete result.password;
+    if (result) {
+      jwt.sign({ result }, privateKey, { expiresIn: "2h" }, (err, token) => {
+        if (err) {
+          res.send(
+            JSON.stringify({
+              message: err,
+              status: "failed",
+            })
+          );
+        } else {
+          res.send(
+            JSON.stringify({
+              data: result,
+              status: "success",
+              auth: token,
+            })
+          );
+        }
+      });
+    } else {
+      res.send(
+        JSON.stringify({
+          message: "Error Ocurred",
+          status: "failed",
+        })
+      );
+    }
+  } catch (err) {
+    res.send(
+      JSON.stringify({
+        message: err,
+        status: "failed",
+      })
+    );
+  }
+});
+
 app.listen(4000);
