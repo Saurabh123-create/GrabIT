@@ -101,6 +101,9 @@ export default function SignUP() {
           <Box className={LoginCss.loginImg}></Box>
           <Box className={LoginCss.loginBox}>
             <Box>
+            <Box textAlign={"center"} fontSize={"30px"} fontWeight={600}>
+                SignUp Page
+              </Box>
               <Box className={LoginCss.labels}>
                 <div>
                   <label htmlFor="name">Name</label>
@@ -166,7 +169,7 @@ export default function SignUP() {
                 />
               </Box>
               <Box color="blue">
-                <Link to={"/login"}>Log-in</Link>
+                <Link style={{textDecoration : "none"}} to={"/login"}>Log-in</Link>
               </Box>
               <Button type="submit" variant="contained" size="large">
                 SignUp

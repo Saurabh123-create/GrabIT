@@ -144,7 +144,7 @@ export default function Login() {
                 />
               </Box>
               <Box color="blue">
-                <Link to={"/signup"}>Sign-up</Link>
+                <Link style={{textDecoration : "none"}} to={"/signup"}>Sign-up</Link>
               </Box>
               <Button type="submit" variant="contained" size="large">
                 Login
