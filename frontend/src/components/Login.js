@@ -1,13 +1,36 @@
-import React, { useState } from "react";
-import { Box, Button } from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
+import { Box, Button, Snackbar } from "@mui/material";
 import LoginCss from "./Login.module.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 export default function Login() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const auth = JSON.parse(localStorage.getItem("auth"));
+    if (auth != null) {
+      navigate("/");
+    }
+  }, []);
   const [loginData, setLoginData] = useState({
     name: "",
     password: "",
     email: "",
   });
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+  });
+
+  function toggleSnackBar(open, message) {
+    setSnackbar((prev) => {
+      return { ...prev, open: true, message: message };
+    });
+  }
+  function handleClose() {
+    setSnackbar((prev) => {
+      return { ...prev, open: false, message: "" };
+    });
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -19,7 +42,14 @@ export default function Login() {
       },
     });
     loginAPi = await loginAPi.json();
-    console.log(loginAPi);
+    if (loginAPi.status == "success") {
+      localStorage.setItem("auth", JSON.stringify(loginAPi.auth));
+      localStorage.setItem("user", JSON.stringify(loginAPi.data));
+      toggleSnackBar(true, "Login Successfull");
+      navigate("/");
+    } else {
+      toggleSnackBar(true, loginAPi.message);
+    }
   }
 
   function handleData(str, dataType) {
@@ -84,7 +114,7 @@ export default function Login() {
                 />
               </Box>
               <Box color="blue">
-                <Link>Sign-up</Link>
+                <Link to={"/signup"}>Sign-up</Link>
               </Box>
               <Button type="submit" variant="contained" size="large">
                 Login
@@ -93,6 +123,15 @@ export default function Login() {
           </Box>
         </Box>
       </form>
+      {snackbar.open && (
+        <Snackbar
+          open={snackbar.open}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          onClose={handleClose}
+          message={snackbar.message}
+          autoHideDuration={3000}
+        />
+      )}
     </>
   );
 }

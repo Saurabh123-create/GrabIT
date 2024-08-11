@@ -1,23 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Button } from "@mui/material";
 import LoginCss from "./SignUp.module.css";
-import {Link} from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 export default function SignUP() {
+  const navigate = useNavigate();
   const [signupData, setsignupData] = useState({
     name: "",
-    password: '',
+    password: "",
     email: "",
     confirmpassword: "",
   });
+
+  useEffect(() => {
+    const auth = JSON.parse(localStorage.getItem("auth"));
+    if (auth != null) {
+      navigate("/");
+    }
+  }, []);
 
   function handleSubmit(event) {
     event.preventDefault();
   }
 
-  function handleData(str,dataType){
-    setsignupData(prev=>{
-        return {...prev, [dataType]:str}
-    })
+  function handleData(str, dataType) {
+    setsignupData((prev) => {
+      return { ...prev, [dataType]: str };
+    });
   }
 
   return (
@@ -37,9 +45,10 @@ export default function SignUP() {
                   placeholder="Please enter name"
                   value={signupData.name}
                   className={LoginCss.input}
-                  onChange={(e)=>{
+                  onChange={(e) => {
                     let str = e.target.value.trimStart();
-                    handleData(str, 'name')}}
+                    handleData(str, "name");
+                  }}
                 />
               </Box>
               <Box className={LoginCss.labels}>
@@ -52,9 +61,10 @@ export default function SignUP() {
                   placeholder="Please enter email"
                   value={signupData.email}
                   className={LoginCss.input}
-                  onChange={(e)=>{
+                  onChange={(e) => {
                     let str = e.target.value.trimStart();
-                    handleData(str, 'email')}}
+                    handleData(str, "email");
+                  }}
                 />
               </Box>
               <Box className={LoginCss.labels}>
@@ -67,9 +77,10 @@ export default function SignUP() {
                   placeholder="Please enter password"
                   value={signupData.password}
                   className={LoginCss.input}
-                  onChange={(e)=>{
+                  onChange={(e) => {
                     let str = e.target.value.trimStart();
-                    handleData(str, 'password')}}
+                    handleData(str, "password");
+                  }}
                 />
               </Box>
               <Box className={LoginCss.labels}>
@@ -82,13 +93,14 @@ export default function SignUP() {
                   placeholder="Please enter confirm password"
                   value={signupData.confirmpassword}
                   className={LoginCss.input}
-                  onChange={(e)=>{
+                  onChange={(e) => {
                     let str = e.target.value.trimStart();
-                    handleData(str, 'confirmpassword')}}
+                    handleData(str, "confirmpassword");
+                  }}
                 />
               </Box>
               <Box color="blue">
-                <Link>Log-in</Link>
+                <Link to={"/login"}>Log-in</Link>
               </Box>
               <Button type="submit" variant="contained" size="large">
                 SignUp

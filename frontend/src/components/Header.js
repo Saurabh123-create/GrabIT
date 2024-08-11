@@ -17,7 +17,9 @@ export default function Header(){
           }}
         />
         </Box>
-        <Link className={HeaderCss.logout} to={'/login'}>LogOut <LogoutIcon sx={{color:'red'}}/></Link>
+        <Link className={HeaderCss.logout} to={'/login'} onClick={()=>{
+          localStorage.clear();
+        }}>LogOut <LogoutIcon sx={{color:'red'}}/></Link>
       </Box>
     )
 }

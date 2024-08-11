@@ -7,19 +7,9 @@ import Routing from './Routing';
 import Header from './components/Header';
 
 function App() {
-  // const {name} = useContext(Context);
-  let loginUser = JSON.parse(localStorage.getItem("asd"));
-  console.log(loginUser,'loginUser')
-  // if(loginUser == null){
-  //   return(
-  //     <div>
-  //     <Routing/>
-  //     </div>
-  //   )
-  // }
+  const {loginData} = useContext(Context);
   return (
     <div className="App">
-      <Header/>
       <Routing/>
     </div>
   );
