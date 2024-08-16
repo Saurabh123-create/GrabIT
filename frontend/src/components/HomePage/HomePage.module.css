@@ -1,0 +1,68 @@
+.mainBox {
+  border: 2px solid red;
+  padding: 10px 120px;
+  display: flex;
+  flex-direction: column;
+  font-family: Inter;
+}
+
+.cardboxMain {
+  position: relative;
+}
+
+.cardbox {
+  max-height: 220px;
+  border: 2px solid red;
+  overflow: hidden;
+  white-space: nowrap;
+  scroll-behavior: smooth;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  padding: 10px;
+  gap: 10px;
+}
+
+.next,
+.prev {
+  position: absolute;
+  top: 45%;
+  background: white;
+  cursor: pointer;
+  z-index: 1;
+  display: inline;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid gray;
+}
+
+.card {
+  flex-shrink: 0;
+  height: 195px;
+  width: 336px;
+  translate: 0px 0px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-position: center;
+  background-size: contain;
+
+}
+
+.card > div {
+    margin: 10px;
+  max-width: 60%;
+  white-space: wrap;
+}
+.card > div > button {
+    background-color :white;
+    color : black;
+    border: 1px solid gray;
+    font-family : Inter;
+    text-transform : capitalize;
+    border-radius : 8px;
+    padding : 4px 6px;
+              
+}

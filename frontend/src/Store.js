@@ -6,6 +6,7 @@ export default function Store({ children }) {
   const [loginData, setLoginData] = useState({
     isLogin: false,
   });
+  const [search , setSearch] = useState("");
   useEffect(() => {
     const auth = JSON.parse(localStorage.getItem("auth"));
     if (auth != null) {
@@ -17,6 +18,8 @@ export default function Store({ children }) {
     <Context.Provider
       value={{
         loginData,
+        search,
+        setSearch
       }}
     >
       {children}
