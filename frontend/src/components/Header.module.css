@@ -1,10 +1,26 @@
 .header {
-  background: #ff8343;
+  background: #FFDE4D;
   height: 80px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0px 10px;
+}
+
+.header > div:first-child {
+  font-size: 30px;
+  font-weight: 700;
+  background: white;
+  color: #FF8343;
+  padding: 5px 8px;
+  border-radius: 20px;
+  cursor: pointer;
+  box-shadow: 4px 4px 2px gray inset;
+}
+
+.header > div:first-child::after{
+  content: " IT";
+  color: rgb(4, 175, 107);
 }
 
 .logout{

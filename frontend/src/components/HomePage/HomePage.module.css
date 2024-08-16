@@ -1,9 +1,9 @@
 .mainBox {
-  border: 2px solid red;
   padding: 10px 120px;
   display: flex;
   flex-direction: column;
   font-family: Inter;
+  gap: 10px;
 }
 
 .cardboxMain {
@@ -12,7 +12,6 @@
 
 .cardbox {
   max-height: 220px;
-  border: 2px solid red;
   overflow: hidden;
   white-space: nowrap;
   scroll-behavior: smooth;
@@ -34,7 +33,8 @@
   display: inline;
   height: 24px;
   border-radius: 50%;
-  border: 1px solid gray;
+  box-shadow: 0px 0px 13px 3px gray;
+  /* border: 1px solid gray; */
 }
 
 .card {
@@ -48,21 +48,37 @@
   justify-content: center;
   background-position: center;
   background-size: contain;
-
 }
 
 .card > div {
-    margin: 10px;
+  margin: 10px;
   max-width: 60%;
   white-space: wrap;
 }
 .card > div > button {
-    background-color :white;
-    color : black;
-    border: 1px solid gray;
-    font-family : Inter;
-    text-transform : capitalize;
-    border-radius : 8px;
-    padding : 4px 6px;
-              
+  background-color: white;
+  color: black;
+  border: 1px solid gray;
+  font-family: Inter;
+  text-transform: capitalize;
+  border-radius: 8px;
+  padding: 4px 6px;
+}
+
+.variety {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: left;
+  padding: 16px;
+}
+
+.variety > div {
+  width: 128px;
+  height: 189px;
+  border: 2px solid #dcd09c;
+  border-radius: 10px;
+  background-position: center;
+  background-size: contain;
+  box-shadow: 3px 3px 15px 5px rgba(176, 170, 170, 0.5);
 }

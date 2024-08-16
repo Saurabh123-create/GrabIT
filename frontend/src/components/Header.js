@@ -12,21 +12,11 @@ export default function Header() {
   return (
     <Box className={HeaderCss.header}>
       <Box
-        sx={{
-          fontSize: "30px",
-          fontWeight: 700,
-          background: "white",
-          color: "#FF8343",
-          border: "2px solid #4158A6",
-          padding: "5px",
-          borderRadius: "10px",
-          cursor: "pointer",
-        }}
         onClick={() => {
           navigate("/");
         }}
       >
-        Grab IT
+        Grab
       </Box>
       <Box sx={{ width: "40dvw" }}>
         <TextField

@@ -12,6 +12,7 @@ export default function Routing() {
       <Route element={<ProtectedRoutes />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/products" element={<Products />} />
+        <Route path="/products/:category" element={<Products />} />
       </Route>
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUP />} />
