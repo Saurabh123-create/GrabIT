@@ -2,6 +2,8 @@ require("./DB/config");
 const users = require("./DB/users");
 const advertisementCards = require("./DB/advertisementCards");
 const variety = require("./DB/variety");
+const category = require("./DB/categories");
+const allProducts = require("./DB/AllProducts");
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
@@ -17,6 +19,19 @@ const upload = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, "Upload");
+    },
+    filename: (req, file, cb) => {
+      cb(
+        null,
+        file.fieldname + "_" + Date.now() + path.extname(file.originalname)
+      );
+    },
+  }),
+});
+const uploadCategory = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, "Upload/SubCategory");
     },
     filename: (req, file, cb) => {
       cb(
@@ -80,6 +95,60 @@ app.post("/variety", upload.single("imgData"), async (req, res) => {
         status: "success",
       })
     );
+  } catch (err) {
+    res.send(err);
+  }
+});
+
+// app.post("/products",uploadCategory.single('imgData'),async (req, res) => {
+//   try {
+//     // if(Object.keys(req.query).length!=0){
+//       let response  = await allProducts.create({...req.body , imgData : req.file.filename})
+//       if(response){
+//         res.send(JSON.stringify({
+//           data : response,
+//           status : 'success'
+//         }));
+//       }
+//   } catch (err) {
+//     res.send(err);
+//   }
+// });
+
+
+app.get("/products/:category",async (req, res) => {
+  try {
+    let result = ''
+    if(Object.keys(req.query).length!=0){
+    result = await allProducts.find(req.query);
+    }else{
+      result = await category.find(req.params);
+    }
+    if(result){
+      if(result.length == 0){
+        res.send(
+          JSON.stringify({
+            status : "success",
+            data : result,
+            message : "No result found."
+          })
+        );
+      }else{
+        res.send(
+          JSON.stringify({
+            status : "success",
+            data : result,
+          })
+        );
+      }
+    }else{
+      res.send(
+        JSON.stringify({
+          status : "failed",
+          message : "Unknown Error occured.",
+        })
+      );
+    }
   } catch (err) {
     res.send(err);
   }
