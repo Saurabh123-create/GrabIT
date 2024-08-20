@@ -100,20 +100,20 @@ app.post("/variety", upload.single("imgData"), async (req, res) => {
   }
 });
 
-// app.post("/products",uploadCategory.single('imgData'),async (req, res) => {
-//   try {
-//     // if(Object.keys(req.query).length!=0){
-//       let response  = await allProducts.create({...req.body , imgData : req.file.filename})
-//       if(response){
-//         res.send(JSON.stringify({
-//           data : response,
-//           status : 'success'
-//         }));
-//       }
-//   } catch (err) {
-//     res.send(err);
-//   }
-// });
+app.post("/products",uploadCategory.single('imgData'),async (req, res) => {
+  try {
+    // if(Object.keys(req.query).length!=0){
+      let response  = await allProducts.create({...req.body , imgData : req.file.filename})
+      if(response){
+        res.send(JSON.stringify({
+          data : response,
+          status : 'success'
+        }));
+      }
+  } catch (err) {
+    res.send(err);
+  }
+});
 
 
 app.get("/products/:category",async (req, res) => {

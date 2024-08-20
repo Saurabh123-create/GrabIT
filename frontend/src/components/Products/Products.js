@@ -12,6 +12,7 @@ export default function Products() {
   const [sideNavData, setSideData] = useState([]);
   const [result, setResults] = useState(["asdasd", "asdds"]);
   const { category } = useParams();
+  const [activeIndex, setActiveIndex] = useState(0);
   useEffect(() => {
     categoryfunc();
   }, []);
@@ -51,7 +52,6 @@ export default function Products() {
   //     formData.append("category", item.category)
   //     formData.append("subcategory" , item.subcategory)
   //     formData.append("imgData" , image)
-
   //     let response = await fetch('http://localhost:4000/products/drinks' , {
   //         method : "POST",
   //         body : formData,
@@ -60,7 +60,18 @@ export default function Products() {
   //     console.log(response, 'response')
   //   }
 
-  console.log(result, "result");
+  function handleItems(item, index) {
+    console.log(item, "result");
+    setActiveIndex(index);
+    Products(item.subcategory).then((result) => {
+      if (result.status == "success") {
+        setResults(result.data);
+        setShowData((prev) => {
+          return { ...prev, result: true };
+        });
+      }
+    });
+  }
 
   return (
     <Box>
@@ -70,13 +81,26 @@ export default function Products() {
           <Box className={ProductsCss.sideNav}>
             {sideNavData.map((item, index) => {
               return (
-                <Box key={index}>
+                <Box
+                  key={index}
+                  className={ProductsCss.sideLink}
+                  onClick={() => {
+                    handleItems(item, index);
+                  }}
+                  sx={{
+                    borderLeft: `10px solid ${
+                      activeIndex == index ? "#fadc8c" : "transparent"
+                    }`,
+                    backgroundColor : activeIndex == index && "#F5F5DC"
+                  }}
+                >
                   <Box
                     className={ProductsCss.webpImgs}
                     sx={{
                       backgroundImage: `url(${
                         "http://localhost:4000/Category/" + item.imgData
                       })`,
+                      
                     }}
                   ></Box>
                   <Box>{item.heading}</Box>
@@ -103,14 +127,18 @@ export default function Products() {
                     <Box className={ProductsCss.quantity}>{item.quantity}</Box>
                     <Box
                       sx={{
-                        display:'flex',
-                        alignItems:"center",
+                        display: "flex",
+                        alignItems: "center",
                         width: "140px",
-                        justifyContent :"space-between",
+                        justifyContent: "space-between",
                       }}
                     >
-                      <Box className={ProductsCss.price}>{item.price + " rs"}</Box>
-                      <Button variant='outlined' sx={{padding:'2px'}}>Add</Button>
+                      <Box className={ProductsCss.price}>
+                        {item.price + " rs"}
+                      </Box>
+                      <Button variant="outlined" sx={{ padding: "2px" }}>
+                        Add
+                      </Button>
                     </Box>
                   </Box>
                 );
