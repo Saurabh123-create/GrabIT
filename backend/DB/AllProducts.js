@@ -8,6 +8,7 @@ const productsSchema = new Schema({
     price : {type : Number , required : true},
     quantity : {type : String , default : '300ml'},
     imgData : {type : String , required : true},
+    count : {type : Number , default : 0},
 })
 
 module.exports = mongoose.model("allproducts",productsSchema)

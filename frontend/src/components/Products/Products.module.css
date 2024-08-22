@@ -76,6 +76,14 @@
   background-size: contain;
 }
 
+.cartimgs {
+  width: 100px;
+  height: 100px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
 .resultBoxHeading {
   text-align: left;
   color: rgb(31, 31, 31);
@@ -85,6 +93,16 @@
   height: 40px;
   /* margin: 5px 0xp; */
   margin-bottom: 10px;
+}
+
+.cardBoxHeading {
+  text-align: left;
+  color: rgb(31, 31, 31);
+  font-weight: 600;
+  font-size: 13px;
+  width: 140px;
+  /* height: 40px; */
+  /* margin: 5px 0xp; */
 }
 
 .quantity {
