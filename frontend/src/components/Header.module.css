@@ -1,5 +1,5 @@
 .header {
-  background:#D6C66E;
+  background:#f8da30;
   height: 80px;
   display: flex;
   justify-content: space-between;
@@ -15,7 +15,7 @@
   padding: 5px 8px;
   border-radius: 20px;
   cursor: pointer;
-  box-shadow: 4px 4px 2px gray inset;
+  filter: drop-shadow(4px 2px 4px gray);
 }
 
 .header > div:first-child::after{

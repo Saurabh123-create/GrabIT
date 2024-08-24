@@ -5,7 +5,7 @@ import { Context } from "../../Store";
 import { Box, Button, Grid } from "@mui/material";
 import { useParams } from "react-router-dom";
 import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
-import ClearIcon from "@mui/icons-material/Clear";
+import Cart from "../Cart/Cart";
 
 export default function Products() {
   const { search } = useContext(Context);
@@ -35,6 +35,7 @@ export default function Products() {
               return item;
             });
             setResults(res);
+            setActiveIndex(0)
             setShowData((prev) => {
               return { ...prev, result: true };
             });
@@ -70,12 +71,13 @@ export default function Products() {
   //   }
 
   function handleItems(item, index) {
-    console.log(item, "result");
-    setActiveIndex(index);
+    if(activeIndex != index){
+      setActiveIndex(index);
+    }
     Products(item.subcategory).then((result) => {
       if (result.status == "success") {
         let res = result.data.map((item) => {
-          return { ...item, count: 0 };
+          return { ...item};
         });
         setResults(res);
         setShowData((prev) => {
@@ -85,21 +87,33 @@ export default function Products() {
     });
   }
 
-  function handleCount(item, calc = "") {
-    setResults((prev) => {
-      let newData = prev.map((val) => {
-        if (val._id == item._id) {
-          if (calc == "substract") {
-            return { ...val, count: val.count - 1 };
-          } else {
-            return { ...val, count: val.count + 1 };
+  function handleCount(item, calc = "" , index) {
+        for(let val of result){
+          if (val._id == item._id) {
+            if (calc == "substract") {
+              updateProduct(item , -1 , index);
+            } else {
+              updateProduct(item , 1 , index);
+            }
           }
-        } else {
-          return val;
         }
-      });
-      return newData;
-    });
+  }
+
+  async function updateProduct(item , opt , index = activeIndex){
+    console.log(opt,'ttt')
+    let response = await fetch(`http://localhost:4000/updateProduct/${item._id}`, {
+      method : "PUT",
+      body:JSON.stringify({
+        opt : opt
+      }),
+      headers:{
+        "Content-Type" : "application/json",
+      }
+    })
+    response = await response.json();
+    handleItems(item , index)
+
+    console.log(response,'function')
   }
 
   return (
@@ -186,7 +200,7 @@ export default function Products() {
                         >
                           <Box
                             onClick={() => {
-                              handleCount(item, "substract");
+                              handleCount(item, "substract" , activeIndex);
                             }}
                           >
                             -
@@ -194,7 +208,7 @@ export default function Products() {
                           <Box>{item.count}</Box>
                           <Box
                             onClick={() => {
-                              handleCount(item);
+                              handleCount(item , "" , activeIndex);
                             }}
                           >
                             +
@@ -206,7 +220,7 @@ export default function Products() {
                           color="success"
                           sx={{ padding: "2px" }}
                           onClick={() => {
-                            handleCount(item);
+                            handleCount(item,"" , activeIndex);
                           }}
                         >
                           Add
@@ -248,209 +262,15 @@ export default function Products() {
         <span>Go to Cart</span>
       </Box>
       {gotoCart && (
-        <SidePanel
+        <Cart
           onClose={() => {
             setGotoCart(false);
+            categoryfunc();
           }}
-          selectedItems={result}
-          handleCount={handleCount}
         />
       )}
     </Box>
   );
 }
 
-function SidePanel({ onClose, selectedItems, handleCount }) {
-  return (
-    <Box
-      sx={{
-        width: "380px",
-        height: "100%",
-        position: "absolute",
-        background: "white",
-        top: "0px",
-        right: "0px",
-        zIndex: "5",
-        boxShadow: "-2px 0px 18px gray",
-        transition: "1s ease",
-        overflow: "auto",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <Box
-        sx={{
-          height: "40px",
-          textAlign: "right",
-          alignContent: "center",
-          paddingRight: "10px",
-          display:'flex',
-          justifyContent:'space-between',
-          alignItems:'center'
-        }}
-        onClick={onClose}
-      >
-        <Box ml={2} fontWeight={700}>Add to Cart</Box>
-        <ClearIcon />
-      </Box>
 
-<Box sx={{maxHeight:'60%', overflow:"auto"}}>
-      {selectedItems
-        .filter((item) => item.count > 0)
-        .map((item, index) => {
-          return (
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                padding: "0px 10px",
-                justifyContent: "space-around",
-                height: "100px",
-              }}
-              key={index}
-            >
-              <Box
-                className={ProductsCss.cartimgs}
-                sx={{
-                  backgroundImage: `url(${
-                    "http://localhost:4000/SubCategory/" + item.imgData
-                  })`,
-                }}
-              ></Box>
-              <Box className={ProductsCss.cardBoxHeading}>
-                {item.heading}
-                <Box className={ProductsCss.quantity}>{item.quantity}</Box>
-                <Box className={ProductsCss.price}>{item.price + " rs"}</Box>
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  width: "140px",
-                  justifyContent: "center",
-                  textAlign: "right",
-                }}
-              >
-                {item?.count > 0 ? (
-                  <Box
-                    sx={{
-                      width: "63px",
-                      height: "29px",
-                      background: "#A2D240",
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "space-around",
-                      color: "white",
-                      borderRadius: "8px",
-                      cursor: "pointer",
-                      fontWeight: "600",
-                      fontSize: "16px",
-                    }}
-                  >
-                    <Box
-                      onClick={() => {
-                        handleCount(item, "substract");
-                      }}
-                    >
-                      -
-                    </Box>
-                    <Box>{item.count}</Box>
-                    <Box
-                      onClick={() => {
-                        handleCount(item);
-                      }}
-                    >
-                      +
-                    </Box>
-                  </Box>
-                ) : (
-                  <Button
-                    variant="outlined"
-                    color="success"
-                    sx={{ padding: "2px" }}
-                    onClick={() => {
-                      handleCount(item);
-                    }}
-                  >
-                    Add
-                  </Button>
-                )}
-              </Box>
-            </Box>
-          );
-        })}
-
-</Box>
-
-      <Box
-        sx={{
-          height: "120px",
-          borderTop: "1px solid gray",
-          marginTop: "auto",
-          padding: "10px",
-        }}
-      >
-        <Box sx={{ fontSize: "15px", fontWeight: "700" }}>Billing Details</Box>
-        <Grid
-          container
-          mt={1}
-          spacing={0.4}
-          sx={{ fontSize: "12px", fontWeight: "500" }}
-        >
-          <Grid item xs="6">
-            <Box>Sub Total</Box>
-          </Grid>
-          <Grid item xs="6">
-            <Box textAlign={"right"}>₹ 126</Box>
-          </Grid>
-          <Grid item xs="6">
-            <Box>Delivery charges</Box>
-          </Grid>
-          <Grid item xs="6">
-            <Box textAlign={"right"}>₹ 12</Box>
-          </Grid>
-          <Grid item xs="6">
-            <Box>Handling charges</Box>
-          </Grid>
-          <Grid item xs="6">
-            <Box textAlign={"right"}>₹ 4</Box>
-          </Grid>
-          <Grid item xs="6">
-            <Box sx={{ fontSize: "13px", fontWeight: "700" }}>Grand Total</Box>
-          </Grid>
-          <Grid item xs="6">
-            <Box
-              textAlign={"right"}
-              sx={{ fontSize: "13px", fontWeight: "700" }}
-            >
-              ₹ 246
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
-      <Box sx={{ height: "80px", alignContent: "center", textAlign: "center" }}>
-        <Box
-          sx={{
-            background: "green",
-            color: "white",
-            borderRadius: "10px",
-            margin: "6px",
-            padding: "13px 16px",
-            fontSize: "15px",
-            display:'flex',
-            flexDirection:'row',
-            justifyContent:'space-between',
-            alignItems:'center'
-          }}
-        >
-          <Box>
-            <Box sx={{fontSize:'15px' , fontWeight:'700'}}>₹ 246</Box>
-            <Box sx={{fontSize:'12px'}}>Total</Box>
-          </Box>
-          <Box sx={{fontWeight:'700'}}>Proceed to Pay</Box>
-        </Box>
-      </Box>
-    </Box>
-  );
-}

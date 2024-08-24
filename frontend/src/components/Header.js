@@ -21,6 +21,7 @@ export default function Header() {
       <Box sx={{ width: "40dvw" }}>
         <TextField
           //   label="With normal TextField"
+          placeholder="Search a product for example :- Cold Drinks"
           autoFocus={location.pathname == "/products"}
           value={search}
           onChange={(e) => {
