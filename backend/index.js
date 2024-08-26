@@ -194,6 +194,33 @@ app.get("/getCartData" , async (req,res)=>{
   }
 })
 
+app.get("/searchProduct" , async (req,res)=>{
+  try{
+    let name = req.query.search;
+    let response = await allProducts.find({
+      "$or" : [
+        {"heading" : {$regex : name}},
+        {"category" : {$regex : name}},
+        {"subcategory" : {$regex : name}},
+      ]
+    })
+    if(response){
+      res.send(JSON.stringify({
+        result  : response,
+        status :"success",
+      }))
+    }else{
+      res.send(JSON.stringify({
+       status : "failed",
+       message : "something went wrong"
+      }));
+    }
+  }catch(err){
+    res.send(err);
+  }
+})
+
+
 
 // app.post("/advertisementCards", upload.single("img"), async (req, res) => {
 //   try {

@@ -22,14 +22,16 @@ export default function Header() {
         <TextField
           //   label="With normal TextField"
           placeholder="Search a product for example :- Cold Drinks"
-          autoFocus={location.pathname == "/products"}
+          autoFocus={location.pathname == "/globalProducts"}
           value={search}
           onChange={(e) => {
             let str = e.target.value.trim();
             setSearch(str);
           }}
           onFocus={() => {
-            navigate("/products");
+            navigate("/globalProducts" , {
+              state : {searchProduct : true}
+            });
           }}
           sx={{
             width: "100%",

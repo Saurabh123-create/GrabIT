@@ -1,104 +1,59 @@
-import React, { useState, useEffect, useContext } from "react";
-import ProductsCss from "./Products.module.css";
+import React, { useEffect, useState,useContext } from "react";
+import { Box, Button } from "@mui/material";
+import ProductsCss from "./GlobalProducts.module.css";
 import Header from "../Header";
 import { Context } from "../../Store";
-import { Box, Button, Grid } from "@mui/material";
-import { useParams } from "react-router-dom";
 import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
 import Cart from "../Cart/Cart";
 
-export default function Products() {
+
+
+export default function GlobalProducts(){
   const { search } = useContext(Context);
+  const [result, setResults] = useState([]);
   const [showData, setShowData] = useState({
     result: false,
   });
-  const [sideNavData, setSideData] = useState([]);
-  const [result, setResults] = useState([]);
-  const { category } = useParams();
-  const [activeIndex, setActiveIndex] = useState(0);
   const [gotoCart, setGotoCart] = useState(false);
-  const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
-      categoryfunc();
-  }, []);
-
-  async function categoryfunc() {
-    let data = await fetch(`http://localhost:4000/products/${category}`);
-    data = await data.json();
-    if (data.status == "success") {
-      setSideData(data.data);
-      if (data.data.length > 0) {
-        Products(data.data[0].subcategory).then((result) => {
-          if (result.status == "success") {
-            let res = result.data;
+      setResults([])
+    if(search){
+        searchProduct();
+    }
+}, [search]);
+    async function searchProduct(){
+        let response = await fetch(`http://localhost:4000/searchProduct?search=${search}`);
+        response = await response.json();
+        console.log(response);
+        if(response.status == "success"){
+            let res = response.result;
             setResults(res);
-            setActiveIndex(0)
             setShowData((prev) => {
-              return { ...prev, result: true };
-            });
-          }
-        });
+                return { ...prev, result: true };
+              });
+        }else{
+            setResults([]);
+            setShowData((prev) => {
+                return { ...prev, result: false };
+              });
+        }
       }
-    } else {
-      setSideData([]);
-    }
-  }
 
-  async function Products(subcategory = "") {
-    let result = await fetch(
-      `http://localhost:4000/products/${category}?subcategory=${subcategory}`
-    );
-    result = await result.json();
-    return result;
-  }
-
-  //   async function handleData(event,item){
-  //     let image = event.target.files[0];
-  //     const formData = new FormData();
-  //     formData.append("heading", item.heading)
-  //     formData.append("category", item.category)
-  //     formData.append("subcategory" , item.subcategory)
-  //     formData.append("imgData" , image)
-  //     let response = await fetch('http://localhost:4000/products/drinks' , {
-  //         method : "POST",
-  //         body : formData,
-  //     })
-  //     response = await response.json();
-  //     console.log(response, 'response')
-  //   }
-
-  function handleItems(item, index) {
-    if(activeIndex != index){
-      setActiveIndex(index);
-    }
-    Products(item.subcategory).then((result) => {
-      if (result.status == "success") {
-        let res = result.data.map((item) => {
-          return { ...item};
-        });
-        setResults(res);
-        setShowData((prev) => {
-          return { ...prev, result: true };
-        });
-      }
-    });
-  }
-
-  function handleCount(item, calc = "" , index) {
+      function handleCount(item, calc = "") {
         for(let val of result){
           if (val._id == item._id) {
             if (calc == "substract") {
-              updateProduct(item , -1 , index);
+              updateProduct(item , -1);
             } else {
-              updateProduct(item , 1 , index);
+              updateProduct(item , 1);
             }
           }
         }
   }
 
-  async function updateProduct(item , opt , index = activeIndex){
-    console.log(opt,'ttt')
+  
+  async function updateProduct(item , opt){
     let response = await fetch(`http://localhost:4000/updateProduct/${item._id}`, {
       method : "PUT",
       body:JSON.stringify({
@@ -109,49 +64,14 @@ export default function Products() {
       }
     })
     response = await response.json();
-    handleItems(item , index)
-
-    console.log(response,'function')
+    if(response.status == "success"){
+        searchProduct();
+    }
   }
-  
-  return (
-    <Box>
-      <Header />
-      <Box
-        className={ProductsCss.mainBox}
-        sx={{ filter: gotoCart && "blur(5px)" }}
-      >
-        <Box className={ProductsCss.parentBox}>
-          <Box className={ProductsCss.sideNav}>
-            {sideNavData.map((item, index) => {
-              return (
-                <Box
-                  key={index}
-                  className={ProductsCss.sideLink}
-                  onClick={() => {
-                    handleItems(item, index);
-                  }}
-                  sx={{
-                    borderLeft: `10px solid ${
-                      activeIndex == index ? "#fadc8c" : "transparent"
-                    }`,
-                    backgroundColor: activeIndex == index && "#F5F5DC",
-                  }}
-                >
-                  <Box
-                    className={ProductsCss.webpImgs}
-                    sx={{
-                      backgroundImage: `url(${
-                        "http://localhost:4000/Category/" + item.imgData
-                      })`,
-                    }}
-                  ></Box>
-                  <Box>{item.heading}</Box>
-                </Box>
-              );
-            })}
-          </Box>
-          <Box className={ProductsCss.results}>
+
+    return <Box>
+        <Header/>
+        <Box className={ProductsCss.results}>
             {showData.result &&
               result.map((item, index) => {
                 return (
@@ -198,7 +118,7 @@ export default function Products() {
                         >
                           <Box
                             onClick={() => {
-                              handleCount(item, "substract" , activeIndex);
+                              handleCount(item, "substract");
                             }}
                           >
                             -
@@ -206,7 +126,7 @@ export default function Products() {
                           <Box>{item.count}</Box>
                           <Box
                             onClick={() => {
-                              handleCount(item , "" , activeIndex);
+                              handleCount(item , "");
                             }}
                           >
                             +
@@ -218,7 +138,7 @@ export default function Products() {
                           color="success"
                           sx={{ padding: "2px" }}
                           onClick={() => {
-                            handleCount(item,"" , activeIndex);
+                            handleCount(item,"");
                           }}
                         >
                           Add
@@ -227,11 +147,10 @@ export default function Products() {
                     </Box>
                   </Box>
                 );
-              })}
+              })
+              }
           </Box>
-        </Box>
-      </Box>
-      <Box
+          <Box
         sx={{
           width: "130px",
           textAlign: "center",
@@ -251,8 +170,6 @@ export default function Products() {
           justifyContent: "space-evenly",
         }}
         onClick={() => {
-          let items = result.filter((item) => item.count > 0);
-          setCartItems(items);
           setGotoCart(true);
         }}
       >
@@ -263,12 +180,9 @@ export default function Products() {
         <Cart
           onClose={() => {
             setGotoCart(false);
-            categoryfunc();
+            searchProduct();
           }}
         />
       )}
     </Box>
-  );
 }
-
-
