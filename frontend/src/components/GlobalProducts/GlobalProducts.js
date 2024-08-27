@@ -71,7 +71,7 @@ export default function GlobalProducts(){
 
     return <Box>
         <Header/>
-        <Box className={ProductsCss.results}>
+        <Box className={ProductsCss.results} sx={{padding : result.length!=0 && "15px 0px"}}>
             {showData.result &&
               result.map((item, index) => {
                 return (
