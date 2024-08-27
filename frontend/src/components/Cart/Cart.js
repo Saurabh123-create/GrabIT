@@ -225,6 +225,8 @@ export default function Cart({ onClose }) {
       </Box>
       <Box sx={{ height: "80px", alignContent: "center", textAlign: "center" }}>
         <Box
+
+          onClick={()=>{}}
           sx={{
             background: "green",
             color: "white",
