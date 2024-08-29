@@ -59,7 +59,7 @@ export default function Header() {
               overflow: "hidden",
             }}
           >
-           {selectedAddress}
+           {selectedAddress.str}
           </Box>
         </Box>
         <Box sx={{ width: "40dvw" }}>

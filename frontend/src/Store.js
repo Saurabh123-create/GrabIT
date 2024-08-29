@@ -11,8 +11,17 @@ export default function Store({ children }) {
   });
   const [dialogStatus , setDialogStatus] = useState({
     address : false,
+    paytab : false,
   })
-  const [selectedAddress , setAddress] = useState('')
+  const [totalCalc, setTotalCalc] = useState({
+    subtotal: 0,
+    total: 0,
+    delivery: 0,
+    handlingCost: 0,
+  });
+
+  
+  const [selectedAddress , setAddress] = useState({})
   const Address = [
     {
       icon: <HomeIcon />,
@@ -49,7 +58,8 @@ export default function Store({ children }) {
         dialogStatus,
         toggleDialog,
         selectedAddress,
-        setAddress
+        setAddress,
+        totalCalc, setTotalCalc
       }}
     >
       {children}

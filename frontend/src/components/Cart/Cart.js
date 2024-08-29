@@ -1,16 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Box, Grid } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import ProductsCss from "../Products/Products.module.css";
+import { Context } from "../../Store";
+import PayTab from "../PayTab/PayTab";
 
 export default function Cart({ onClose }) {
+  const {toggleDialog , totalCalc, setTotalCalc} = useContext(Context);
   const [data, setData] = useState();
-  const [totalCalc, setTotalCalc] = useState({
-    subtotal: 0,
-    total: 0,
-    delivery: 0,
-    handlingCost: 0,
-  });
   useEffect(() => {
     getCartData();
   }, []);
@@ -226,7 +223,7 @@ export default function Cart({ onClose }) {
       <Box sx={{ height: "80px", alignContent: "center", textAlign: "center" }}>
         <Box
 
-          onClick={()=>{}}
+          onClick={()=>{toggleDialog('paytab',true)}}
           sx={{
             background: "green",
             color: "white",

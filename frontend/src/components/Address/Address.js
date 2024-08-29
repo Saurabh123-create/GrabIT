@@ -14,7 +14,7 @@ export default function Address(){
             <Box mt={2}>
             {Address.map(item=>{
             return <Box sx={{display:'flex', cursor:'pointer'}} onClick={()=>{
-                setAddress(item.str);
+                setAddress(item);
             }}>
             <Box sx={{padding:'12px', alignContent:'center'}}>{item.icon}</Box>
             <Box sx={{wordBreak:'break-word',padding:'10px'}}>
