@@ -12,8 +12,9 @@ import BusinessIcon from "@mui/icons-material/Business";
 import PaymentIcon from "@mui/icons-material/Payment";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import DoneIcon from "@mui/icons-material/Done";
-
+import { useNavigate } from "react-router-dom";
 export default function PayTab() {
+    const navigate = useNavigate();
   const {
     dialogStatus,
     toggleDialog,
@@ -245,6 +246,11 @@ export default function PayTab() {
   };
 
   const lastpage = () => {
+    setTimeout(()=>{
+        toggleDialog("paytab", false);
+        setActiveStep(0);
+        navigate('/')
+    },3000)
     return (
       <Box>
         <Box
@@ -273,6 +279,9 @@ export default function PayTab() {
         <Box textAlign={"center"} color={"green"} mt={1} fontSize={"20px"}>
           {"Amount done successfuly."}
         </Box>
+        <Box textAlign={'center'} marginTop={'20px'}>
+            Redirecting to Home Page 
+        </Box>
       </Box>
     );
   };
@@ -296,6 +305,7 @@ export default function PayTab() {
         sx={{ padding: "12px 12px", textAlign: "right" }}
         onClick={() => {
           toggleDialog("paytab", false);
+          setActiveStep(0);
         }}
       >
         <ClearIcon fontSize="small" />
@@ -341,9 +351,10 @@ export default function PayTab() {
               Prev
             </Button>
             <Button
+                test={console.log(activeStep , verifyBtn)}
               variant="contained"
               size="small"
-              disabled={activeStep == 3 || verifyBtn != "Verified"}
+              disabled={activeStep >= 2}
               onClick={() => {
                 if (activeStep < 2) {
                   setActiveStep((prev) => {

@@ -223,9 +223,12 @@ export default function Cart({ onClose }) {
       <Box sx={{ height: "80px", alignContent: "center", textAlign: "center" }}>
         <Box
 
-          onClick={()=>{toggleDialog('paytab',true)}}
+          onClick={()=>{if(totalCalc.total!=0){
+            toggleDialog('paytab',true)
+            onClose();
+          }}}
           sx={{
-            background: "green",
+            background: totalCalc.total == 0? 'gray' :  "green",
             color: "white",
             borderRadius: "10px",
             margin: "6px",
@@ -235,6 +238,7 @@ export default function Cart({ onClose }) {
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
+            cursor:'pointer'
           }}
         >
           <Box>
